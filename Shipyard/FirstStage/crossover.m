@@ -1,6 +1,6 @@
-function [child] = crossover (parent1, parent2, dim)
+function [child] = crossover (parent1, parent2, problem)
 
-    if objFunction(parent1, dim) < objFunction(parent2, dim)
+    if objFunction(parent1, problem) < objFunction(parent2, problem)
         priority = parent1;
         secondary = parent2;
     else
@@ -8,7 +8,7 @@ function [child] = crossover (parent1, parent2, dim)
         secondary = parent1;
     end
 
-    for i = length(parent1)
+    for i = 1:length(parent1)
         coin = rand();
         
         if coin <= 0.6

@@ -8,6 +8,7 @@ classdef Problem
         n_Rand
         Maxgen;
         matrixDim;
+        fixedDept;
     end
     methods
         

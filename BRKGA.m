@@ -6,20 +6,22 @@ function [best, time] = BRKGA(problem)
     NotElitepop = [];
     gen = 0;
     best = [];
+    
+    size = problem.n_ind;
     while(~exit)
         gen = gen + 1
         if isempty(pop)
-            for i = 1:problem.n_ind
+            for i = 1:size
                 pop = [pop; create_individual(problem.n_indSize)];
             end
         else
             pop = [];
-            for i = 1:problem.n_Rand
+            for i = 1:problem.n_Rand*size
                 pop = [pop; create_individual(problem.n_indSize)];
             end
                                    
             %%%%%crossover
-            NotElitepop = mating(NotElitepop, problem.matrixDim);
+            NotElitepop = mating(NotElitepop, problem);
             
             pop = [pop; Elitepop; NotElitepop];
         end
@@ -28,7 +30,7 @@ function [best, time] = BRKGA(problem)
         
         value = [];
         for i=1:problem.n_ind
-            value = [value objFunction(pop(i,:), problem.matrixDim)];
+            value = [value objFunction(pop(i,:), problem)];
         end
         
         [~, new_order] = sort(value);
@@ -40,12 +42,12 @@ function [best, time] = BRKGA(problem)
         end
         
         Elitepop = [];
-        for i = 1:problem.n_Elite
+        for i = 1:problem.n_Elite*size
             Elitepop = [Elitepop; pop(new_order(i),:)];
         end
         
         NotElitepop = [];
-        for i = problem.n_Elite+1:problem.n_Elite+problem.n_NOTelite
+        for i = (problem.n_Elite*size)+1:(problem.n_Elite*size)+(problem.n_NOTelite*size)
             NotElitepop = [NotElitepop; pop(new_order(i),:)];
         end
         

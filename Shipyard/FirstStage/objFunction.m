@@ -1,12 +1,13 @@
-function [fx] = objFunction(ind, dim)
+function [fx] = objFunction(ind, problem)
 
-    ord = decoder(ind);
+    ord = decoder(ind,problem);
 
     load('Shipyard\cost_table.mat');
     load('Shipyard\material_table.mat');
     
     size = length(ord);
     
+    dim = problem.matrixDim;
     
     if checkConstraints(ord,dim)
         k=1;
