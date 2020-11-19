@@ -1,7 +1,9 @@
 classdef ScndStage < Problem
     properties
         initialCentroids = [];
-        departments = [];
+        depSize = [];
+        constraints = [];
+        weights = [];
     end
     methods
         

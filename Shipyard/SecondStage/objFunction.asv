@@ -1,4 +1,4 @@
-function [fx] = objFunction(ind, problem)
+function [fx] = objFunction(ind, problem, constraint)
     %
     ord = decoder(ind,problem);
 
@@ -9,12 +9,8 @@ function [fx] = objFunction(ind, problem)
     
     dim = problem.matrixDim;
     
-    constraint = problem.constraints;
-    
     f = zeros(1, length(problem.weight));
-    
     if checkConstraints(ord,dim)
-%%
         k=1;
         for i = 1:dim(1)
           for j = 1:dim(2)
@@ -38,13 +34,13 @@ function [fx] = objFunction(ind, problem)
             end
         end
         
-%%
+
         for i = 1:size
             achArea = (ord(i).sizeU + ord(i).sizeD) * (ord(i).sizeR + ord(i).sizeL);
             
             f(2) = f(2) + abs(ord(i).reqArea - achArea)/ord(i).reqArea;
         end
-%%
+        
         for i = 1:size
             if (ord(i).sizeU + ord(i).sizeD) > (ord(i).sizeR + ord(i).sizeL)
                 achAspect = (ord(i).sizeU + ord(i).sizeD) / (ord(i).sizeR + ord(i).sizeL);
@@ -54,7 +50,8 @@ function [fx] = objFunction(ind, problem)
             
             f(3) = f(3) + abs(ord(i).reqAspect - achAspect);
         end
-%%
+        
+        
         for i = 1:size
             for j = i+1:size
                 aux = [];
@@ -64,13 +61,9 @@ function [fx] = objFunction(ind, problem)
                     end
                 end
                 
-                if ~isempty(k)
-                    f(4) = f(4) + constraint(k).reqAdj(1 - constraint(k).achAdj);
-                    
-                    f(5)= f(5) + constraint(k).reqAlign(1 - constraint(k).achAlign);
-                end
+                if ~isempty
                 
-            end
+            end            
         end
         
         fx = sum(problem.weight.*f);

@@ -2,6 +2,7 @@ function [bool] = checkConstraints(ind,dim)
 
     load('Shipyard\constraint_table.mat');
     
+    %{
     for i= 1:length(constraints)
         pos1 = find([ind(:)==constraints(i,1)]);
         pos2 = find([ind(:)==constraints(i,2)]);
@@ -22,5 +23,8 @@ function [bool] = checkConstraints(ind,dim)
             end
         end
     end
+    %}
 
+    
+    bool = true;
 end
