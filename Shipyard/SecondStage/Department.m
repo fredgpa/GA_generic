@@ -3,10 +3,10 @@ classdef Department
         n = [];
         centroidX = [];
         centroidY = [];
-        sizeU = 0;
-        sizeD = 0;
-        sizeR = 0;
-        sizeL = 0;
+        sizeU = .5;
+        sizeD = .5;
+        sizeR = .5;
+        sizeL = .5;
         reqArea = [];
         reqAspect = [];
         fixedPos = [];

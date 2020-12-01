@@ -11,17 +11,11 @@ function [fx] = objFunction(ind, problem)
     
     constraint = problem.constraints;
     
-    f = zeros(1, length(problem.weight));
+    f = zeros(1, length(problem.weights));
     
-    if checkConstraints(ord,dim)
+    [check, ord, constraint] = checkConstraints(ord, constraint);
+    if check
 %%
-        k=1;
-        for i = 1:dim(1)
-          for j = 1:dim(2)
-            pos(i, j) = ord(k);
-            k = k + 1;
-          end
-        end
 
         distance = zeros(size);
         for i = 1:size
@@ -73,7 +67,7 @@ function [fx] = objFunction(ind, problem)
             end
         end
         
-        fx = sum(problem.weight.*f);
+        fx = sum(problem.weights.*f);
     else
         fx = Inf;
     end

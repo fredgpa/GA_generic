@@ -4,6 +4,8 @@ classdef ScndStage < Problem
         depSize = [];
         constraints = [];
         weights = [];
+        reqArea = [];
+        reqAspect = [];
     end
     methods
         
