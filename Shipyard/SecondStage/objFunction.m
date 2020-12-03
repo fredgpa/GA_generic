@@ -54,14 +54,14 @@ function [fx] = objFunction(ind, problem)
                 aux = [];
                 for k = 1:length(constraint)
                     if constraint(k).checkDept(ord(i).n) && constraint(k).checkDept(ord(j).n)
-                        aux = k;
+                        break;
                     end
                 end
                 
                 if ~isempty(k)
-                    f(4) = f(4) + constraint(k).reqAdj(1 - constraint(k).achAdj);
+                    f(4) = f(4) + constraint(k).reqAdj*(1 - constraint(k).achAdj);
                     
-                    f(5)= f(5) + constraint(k).reqAlign(1 - constraint(k).achAlign);
+                    f(5)= f(5) + constraint(k).reqAlign*(1 - constraint(k).achAlign);
                 end
                 
             end

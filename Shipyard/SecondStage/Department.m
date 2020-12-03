@@ -70,7 +70,7 @@ classdef Department
                 obj.centroidX = obj.centroidX - 1;
             end
         end
-        function obj = center(obj)            
+        function obj = center(obj)
             obj.centroidX = floor(((obj.centroidX - obj.sizeL) + (obj.centroidX + obj.sizeR))/2);
             obj.centroidY = floor(((obj.centroidY - obj.sizeU) + (obj.centroidY + obj.sizeD))/2);
 

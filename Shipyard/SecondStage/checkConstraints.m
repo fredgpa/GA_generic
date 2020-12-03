@@ -23,6 +23,8 @@ function [bool, ind, constraintsProblem] = checkConstraints(ind, constraintsProb
             else
                 constraintsProblem(i).achAdj = 0;
             end
+        else
+            constraintsProblem(i).achAdj = 0;
         end
         
         if constraints(i, 4)
@@ -33,6 +35,8 @@ function [bool, ind, constraintsProblem] = checkConstraints(ind, constraintsProb
             else
                 constraintsProblem(i).achAlign = 0;
             end
+        else
+            constraintsProblem(i).achAlign = 0;
         end
         
     end
