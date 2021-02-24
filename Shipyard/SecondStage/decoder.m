@@ -39,140 +39,52 @@ function [department] = decoder(ind, problem)
 
             depWidth = depSize(sorted(i), 1);
             depHeight = depSize(sorted(i), 2);
+            
+            collision = [false false false false];
+            [upLength, collision(1)] = detectCollision(department(sorted(i)), "up", [depHeight/2, depHeight/2, depWidth/2, depWidth/2], department, matrixDim);
+            [downLength, collision(2)] = detectCollision(department(sorted(i)), "down", [depHeight/2, depHeight/2, depWidth/2, depWidth/2], department, matrixDim);
+            [rightLength, collision(3)] = detectCollision(department(sorted(i)), "right", [depHeight/2, depHeight/2, depWidth/2, depWidth/2], department, matrixDim);
+            [leftLength, collision(4)] = detectCollision(department(sorted(i)), "left", [depHeight/2, depHeight/2, depWidth/2, depWidth/2], department, matrixDim);
+            
 
-            yUpEnd = department(sorted(i)).centroidY - depHeight/2;
-            yDownEnd = department(sorted(i)).centroidY + depHeight/2;
-            xRightEnd = department(sorted(i)).centroidX + depWidth/2;
-            xLeftEnd = department(sorted(i)).centroidX - depWidth/2;
+            if collision(1) == collision(2)
+                department(sorted(i)).sizeU = upLength;
+                department(sorted(i)).sizeD = downLength;
 
-            collision = [0 0 0 0];
-            rightLength = [];
-            leftLength = [];
-            upLength = [];
-            downLength = [];
-
-            for j=1:n_indSize
-                %texto = "Dept B:"
-                %sorted(j)
-
-                if yUpEnd >= 0
-                    if department(sorted(j)).centroidX + department(sorted(j)).sizeR >= xLeftEnd && department(sorted(j)).centroidX - department(sorted(j)).sizeL <= xRightEnd
-                        if department(sorted(j)).centroidY + department(sorted(j)).sizeD > yUpEnd && department(sorted(j)).centroidY < department(sorted(i)).centroidY
-                            collision(1) = 1;
-                            if isempty(upLength) || abs(department(sorted(j)).centroidY + department(sorted(j)).sizeD - department(sorted(i)).centroidY) < upLength
-                                upLength = abs(department(sorted(j)).centroidY + department(sorted(j)).sizeD - department(sorted(i)).centroidY);
-                            end
-                            continue;
-                        end
-                    end
-                else
-                    collision(1) = 1;
-                    if isempty(upLength) ||abs(department(sorted(i)).centroidY - 0) < upLength
-                        upLength = abs(department(sorted(i)).centroidY - 0);
-                    end
-                    continue;
-                end
-
-                if yDownEnd <= matrixDim(2)
-                    if department(sorted(j)).centroidX + department(sorted(j)).sizeR >= xLeftEnd && department(sorted(j)).centroidX - department(sorted(j)).sizeL <= xRightEnd
-                        if department(sorted(j)).centroidY - department(sorted(j)).sizeU < yDownEnd && department(sorted(j)).centroidY > department(sorted(i)).centroidY
-                            collision(2) = 1;
-                            if isempty(downLength) ||abs(department(sorted(j)).centroidY - department(sorted(j)).sizeU - department(sorted(i)).centroidY) < downLength
-                                downLength = abs(department(sorted(j)).centroidY - department(sorted(j)).sizeU - department(sorted(i)).centroidY);
-                            end
-                            continue;
-                        end
-                    end
-                else
-                    collision(2) = 1;
-                    if isempty(downLength) ||abs(department(sorted(i)).centroidY - matrixDim(2)) < downLength
-                        downLength = abs(department(sorted(i)).centroidY - matrixDim(2));
-                    end
-                    continue;
-                end
-
-                if xRightEnd <= matrixDim(1)
-                    if department(sorted(j)).centroidY + department(sorted(j)).sizeD >= yUpEnd && department(sorted(j)).centroidY - department(sorted(j)).sizeU <= yDownEnd
-                        if department(sorted(j)).centroidX - department(sorted(j)).sizeL < xRightEnd && department(sorted(j)).centroidX > department(sorted(i)).centroidX
-                            collision(3) = 1;
-                            if isempty(rightLength) || abs(department(sorted(j)).centroidX + department(sorted(j)).sizeR - department(sorted(i)).centroidX) < rightLength
-                                rightLength = abs(department(sorted(j)).centroidX - department(sorted(j)).sizeL - department(sorted(i)).centroidX);
-                            end
-                            continue;
-                        end
-                    end
-                else
-                    collision(3) = 1;
-                    if isempty(rightLength) || abs(department(sorted(i)).centroidX - matrixDim(1)) < rightLength
-                        rightLength = abs(department(sorted(i)).centroidX - matrixDim(1));
-                    end
-                    continue;
-                end
-
-                if xLeftEnd >= 0
-                    if department(sorted(j)).centroidY + department(sorted(j)).sizeD >= yUpEnd && department(sorted(j)).centroidY - department(sorted(j)).sizeU <= yDownEnd
-                        if department(sorted(j)).centroidX + department(sorted(j)).sizeR > xLeftEnd && department(sorted(j)).centroidX < department(sorted(i)).centroidX
-                            collision(4) = 1;
-                            if isempty(leftLength) || abs(department(sorted(j)).centroidX - department(sorted(j)).sizeL - department(sorted(i)).centroidX) < leftLength
-                                leftLength = abs(department(sorted(j)).centroidX + department(sorted(j)).sizeR - department(sorted(i)).centroidX);
-                            end
-                            continue;
-                        end
-                    end
-                else
-                    collision(4) = 1;
-                    if isempty(leftLength) || abs(department(sorted(i)).centroidX - 0) < leftLength
-                        leftLength = abs(department(sorted(i)).centroidX - 0);
-                    end
-                    continue;
-                end
-            end
-
-            if collision(1) == 0 && collision(2) == 0
-                department(sorted(i)).sizeU = depHeight/2;
-                department(sorted(i)).sizeD = depHeight/2;
+                department(sorted(i)) = department(sorted(i)).center;
+            elseif collision(1)
+                department(sorted(i)).sizeU = upLength;
+                department(sorted(i)).sizeD = detectCollision(department(sorted(i)), "down", [upLength, depHeight - upLength, depWidth/2, depWidth/2], department, matrixDim);
+                    
+                department(sorted(i)) = department(sorted(i)).center;
             else
-                if collision(1) == 1 && collision(2) == 1
-                    department(sorted(i)).sizeU = upLength;
-                    department(sorted(i)).sizeD = downLength;
-                    
-                    department(sorted(i)) = department(sorted(i)).center;
-                elseif collision(1) == 1
-                    department(sorted(i)).sizeU = upLength;
-                    department(sorted(i)).sizeD = depHeight - upLength;
-                    
-                    department(sorted(i)) = department(sorted(i)).center;
-                else
-                    department(sorted(i)).sizeD = downLength;
-                    department(sorted(i)).sizeU = depHeight - downLength;
-                    
-                    department(sorted(i)) = department(sorted(i)).center;
-                end
+                department(sorted(i)).sizeD = downLength;
+                department(sorted(i)).sizeU = detectCollision(department(sorted(i)), "up", [depHeight - downLength, downLength, depWidth/2, depWidth/2], department, matrixDim);
+
+                department(sorted(i)) = department(sorted(i)).center;
             end
 
-            if collision(3) == 0 && collision(4) == 0
-                department(sorted(i)).sizeR = depWidth/2;
-                department(sorted(i)).sizeL = depWidth/2;
+
+            if collision(3) == collision(4)
+                department(sorted(i)).sizeR = rightLength;
+                department(sorted(i)).sizeL = leftLength;
+
+                department(sorted(i)) = department(sorted(i)).center;
+            elseif collision(3)
+                department(sorted(i)).sizeR = rightLength;
+                department(sorted(i)).sizeL = detectCollision(department(sorted(i)), "left", [depHeight/2, depHeight/2, rightLength, depHeight - rightLength], department, matrixDim);
+
+                department(sorted(i)) = department(sorted(i)).center;
             else
-                if collision(3) == 1 && collision(4) == 1
-                    department(sorted(i)).sizeR = rightLength;
-                    department(sorted(i)).sizeL = leftLength;
-                    
-                    department(sorted(i)) = department(sorted(i)).center;
-                elseif collision(3) == 1
-                    department(sorted(i)).sizeR = rightLength;
-                    department(sorted(i)).sizeL = depHeight - rightLength;
-                    
-                    department(sorted(i)) = department(sorted(i)).center;
-                else
-                    department(sorted(i)).sizeL = leftLength;
-                    department(sorted(i)).sizeR = depHeight - leftLength;
-                    
-                    department(sorted(i)) = department(sorted(i)).center;
-                end
+                department(sorted(i)).sizeL = leftLength;
+                department(sorted(i)).sizeR = detectCollision(department(sorted(i)), "right", [depHeight/2, depHeight/2, depHeight - leftLength, leftLength], department, matrixDim);
+
+                department(sorted(i)) = department(sorted(i)).center;
             end
 
-            %%visual_representation(department, problem.matrixDim);
+            
         end
     end
+    
+   %%visual_representation(department, problem.matrixDim); 
 end

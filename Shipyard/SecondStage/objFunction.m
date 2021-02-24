@@ -1,6 +1,8 @@
 function [fx] = objFunction(ind, problem)
     %
     ord = decoder(ind,problem);
+    
+    ord = localSearch(ord, problem);
 
     load('Shipyard\cost_table.mat');
     load('Shipyard\material_table.mat');

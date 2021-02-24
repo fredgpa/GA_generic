@@ -1,9 +1,25 @@
-function [best, time] = BRKGA(problem)
+function [best, time] = NSGAII(problem)
+
+%% ----- instruções de modificação
+
+%criar uma população
+
+%usar um sistema de torneio para selecionar os melhores individuos e fazer
+%crossover e mutação
+
+%dividir esses individuos em ranks
+
+%mandar os melhores pra população nova (e usar o crowding distance)
+
+%selecionar os melhores
+
+%repetir até...
+
+%% -----------
+
  tic
     exit = false;
     pop = [];
-    Elitepop = [];
-    NotElitepop = [];
     gen = 0;
     best = [];
     
@@ -15,18 +31,13 @@ function [best, time] = BRKGA(problem)
                 pop = [pop; create_individual(problem.n_indSize)];
             end
         else
-            pop = [];
-            for i = 1:problem.n_Rand*size
-                pop = [pop; create_individual(problem.n_indSize)];
-            end
-                                   
-            %%%%%crossover
-            NotElitepop = mating(NotElitepop, problem);
+            %pegar os melhores e crowding distance
             
-            pop = [pop; Elitepop; NotElitepop];
         end
+
         
-            
+        
+        pop = [pop; NSGAmating(pop, problem)];
         
         value = [];
         for i=1:problem.n_ind
@@ -41,15 +52,7 @@ function [best, time] = BRKGA(problem)
             best.gen = gen;
         end
         
-        Elitepop = [];
-        for i = 1:problem.n_Elite*size
-            Elitepop = [Elitepop; pop(new_order(i),:)];
-        end
-        
-        NotElitepop = [];
-        for i = (problem.n_Elite*size)+1:(problem.n_Elite*size)+(problem.n_NOTelite*size)
-            NotElitepop = [NotElitepop; pop(new_order(i),:)];
-        end
+        pop = sortPop(pop, new_order);
         
         if gen == problem.Maxgen
             exit = true;

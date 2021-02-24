@@ -71,17 +71,17 @@ classdef Department
             end
         end
         function obj = center(obj)
-            obj.centroidX = floor(((obj.centroidX - obj.sizeL) + (obj.centroidX + obj.sizeR))/2);
-            obj.centroidY = floor(((obj.centroidY - obj.sizeU) + (obj.centroidY + obj.sizeD))/2);
+            obj.centroidX = ((obj.centroidX - obj.sizeL) + (obj.centroidX + obj.sizeR))/2;
+            obj.centroidY = ((obj.centroidY - obj.sizeU) + (obj.centroidY + obj.sizeD))/2;
 
             wid = obj.sizeL + obj.sizeR;
             hei = obj.sizeU + obj.sizeD;
 
-            obj.sizeL = floor(wid/2);
-            obj.sizeR = ceil(wid/2);
+            obj.sizeL = wid/2;
+            obj.sizeR = wid/2;
 
-            obj.sizeU = floor(hei/2);
-            obj.sizeD = ceil(hei/2);
+            obj.sizeU = hei/2;
+            obj.sizeD = hei/2;
         end
         function direction = dirRelation(obj, dept)
             if obj.centroidX == dept.centroidX
