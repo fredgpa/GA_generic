@@ -1,15 +1,19 @@
-function [new_pop] = mating(pop, problem)
+function [pop] = NSGAmating(pop, sortedPop, problem)
 i=1;
-new_pop = [];
 
-while i <= length(pop(:,1))
-    child1 = crossover(pop(i,:),pop(i+1,:), problem);
-    child2 = crossover(pop(i+1,:), pop(i,:), problem);
+
+while i <= problem.n_ind
+    
+    parent1 = tournament(sortedPop, problem);
+    
+    parent2 = tournament(sortedPop, problem);
+    
+    child = OnePointCrossover(pop(parent1, :), pop(parent2, :), problem);
     
 
-    new_pop = [new_pop; child1; child2];
+    pop = [pop; child];
     
-    i = i+2;
+    i = i+1;
 end
 
 

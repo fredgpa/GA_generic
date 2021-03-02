@@ -69,7 +69,7 @@ function [fx] = objFunction(ind, problem)
             end
         end
         
-        fx = sum(problem.weights.*f);
+        fx = problem.weights.*f;
     else
         fx = Inf;
     end

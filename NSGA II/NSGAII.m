@@ -24,36 +24,66 @@ function [best, time] = NSGAII(problem)
     best = [];
     
     size = problem.n_ind;
+    
+    for i = 1:size
+        pop = [pop; create_individual(problem.n_indSize)];
+    end
+    
+    value = [];
+    for i=1:problem.n_ind
+        value = [value; {objFunction(pop(i,:), problem)}];
+    end
+    
+    sortedPop = nonDominanceSorting(pop, value);
+    
     while(~exit)
         gen = gen + 1
-        if isempty(pop)
-            for i = 1:size
-                pop = [pop; create_individual(problem.n_indSize)];
+        
+        pop = NSGAmating(pop, sortedPop, problem);
+        
+        
+        
+       	value = [];
+        for i=1:problem.n_ind*2
+            value = [value; {objFunction(pop(i,:), problem)}];
+        end
+    
+        sortedPop = nonDominanceSorting(pop, value);
+        
+        newPop = [];
+        rankTracker = 1;
+        while height(newPop) < problem.n_ind
+            if problem.n_ind - height(newPop) >= length(sortedPop{rankTracker})
+                
+                for i = 1:length(sortedPop{rankTracker})
+                    newPop = [newPop; pop(sortedPop{rankTracker}(i), :)];
+                end
+                rankTracker = rankTracker + 1;
+            else
+                
+                rankValues = {};
+                for i = 1:length(sortedPop{rankTracker})
+                    rankValues = [rankValues; {objFunction(pop(sortedPop{rankTracker}(i),:), problem)}];
+                end
+                
+                valueOrder = crowdingDistanceAssignment(sortedPop{rankTracker}, rankValues);
+                
+                n = problem.n_ind - height(newPop);
+                
+                for i = 1:n
+                    newPop = [newPop; pop(sortedPop{rankTracker}(valueOrder(i)), 1)];
+                end
             end
-        else
-            %pegar os melhores e crowding distance
-            
         end
+        
+% %         if isempty(best) || (value(new_order(1)) < best.value)
+% %             best.ind = pop(new_order(1),:);
+% %             best.value = value(new_order(1));
+% %             best.gen = gen;
+% %         end
 
-        
-        
-        pop = [pop; NSGAmating(pop, problem)];
-        
-        value = [];
-        for i=1:problem.n_ind
-            value = [value objFunction(pop(i,:), problem)];
-        end
-        
-        [~, new_order] = sort(value);
-        
-        if isempty(best) || (value(new_order(1)) < best.value)
-            best.ind = pop(new_order(1),:);
-            best.value = value(new_order(1));
-            best.gen = gen;
-        end
-        
-        pop = sortPop(pop, new_order);
-        
+        pop = newPop;
+                
         if gen == problem.Maxgen
             exit = true;
         end

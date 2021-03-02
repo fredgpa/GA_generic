@@ -6,6 +6,8 @@ classdef ScndStage < Problem
         weights = [];
         reqArea = [];
         reqAspect = [];
+        tournamentSize = [];
+        tournamentProb = [];
     end
     methods
         
